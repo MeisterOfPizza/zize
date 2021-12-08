@@ -1,0 +1,16 @@
+{
+  "name": "zize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node zize.js"
+  },
+  "keywords": [],
+  "author": "Emil Engelin",
+  "license": "MIT",
+  "devDependencies": {
+    "chalk": "^4.1.0"
+  }
+}
