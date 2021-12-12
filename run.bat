@@ -1,0 +1,2 @@
+node zize.js %*
+pause
