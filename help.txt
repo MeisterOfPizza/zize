@@ -1,0 +1,13 @@
+Usage: zize [options]
+       zize <relative-path> [options]
+       zize <absolute-path> [options]
+
+Options:
+    -A, --abort                        Abort the size counting if there are any errors (there are often very many because of privileges).
+    -E, --extra-verbose                Print each file counted (there are many, will heavily decrease performance).
+    -H, --help                         Print usage and options (this).
+    -D, --large-dirs                   Show a list of the largest directories found.
+    -N, --large-dirs-count=<count>     Show at least this many large directories.
+    -F, --large-files                  Show a list of the largest files found.
+    -M, --large-files-count=<count>    Show at least this many large files.
+    -V, --verbose                      Print each directory counted (there are many, *may* decrease performance).

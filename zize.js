@@ -1,3 +1,4 @@
+const fs    = require('fs');
 const path  = require('path');
 const chalk = require('chalk');
 const {
@@ -8,17 +9,23 @@ const {
     autoFormatSize,
 } = require('./utils');
 
-const [,, ...args] = process.argv;
+const [, assets, ...args] = process.argv;
 
 const p_path = getParam(args, 0);
 
-const o_verbose       = hasOption(args, 'verbose', 'V');
-const o_extra_verbose = hasOption(args, 'extra-verbose', 'E');
-const o_abort         = hasOption(args, 'abort', 'A');
-const o_ldirs         = hasOption(args, 'ldirs', 'D');
-const o_nldirs        = parseInt(hasOptionWithValue(args, 'nldirs', undefined, '10'));
-const o_lfiles        = hasOption(args, 'lfiles', 'F');
-const o_nlfiles       = parseInt(hasOptionWithValue(args, 'nlfiles', undefined, '10'));
+const o_abort             = hasOption(args, 'abort', 'A');
+const o_extra_verbose     = hasOption(args, 'extra-verbose', 'E');
+const o_help              = hasOption(args, 'help', 'H');
+const o_large_dirs        = hasOption(args, 'large-dirs', 'D');
+const o_large_dirs_count  = parseInt(hasOptionWithValue(args, 'large-dirs-count', 'N', '10'));
+const o_large_files       = hasOption(args, 'large-files', 'F');
+const o_large_files_count = parseInt(hasOptionWithValue(args, 'large-files-count', 'M', '10'));
+const o_verbose           = hasOption(args, 'verbose', 'V');
+
+if (o_help) {
+    console.log(fs.readFileSync(path.resolve(assets, '../help.txt'), { encoding: 'ascii' }));
+    return;
+}
 
 const getSize = require('.');
 
@@ -66,11 +73,11 @@ if (o_abort) {
     };
 }
 
-if (o_ldirs) {
+if (o_large_dirs) {
     options.collectDirs = true;
 }
 
-if (o_lfiles) {
+if (o_large_files) {
     options.collectFiles = true;
 }
 
@@ -78,19 +85,19 @@ getSize(path.resolve(process.cwd(), p_path || ''), options)
     .then(({ dirSize, dirSizePairs, fileSizePairs }) => {
         process.stdout.write('\n');
 
-        if (o_ldirs) {
+        if (o_large_dirs) {
             console.log(chalk.green('=== Largest directories ==='));
             const sortedDirSizePairs = dirSizePairs.sort(([, sizeA], [, sizeB]) => sizeB - sizeA);
-            for (let i = 0; i < Math.min(o_nldirs, sortedDirSizePairs.length); i++) {
+            for (let i = 0; i < Math.min(o_large_dirs_count, sortedDirSizePairs.length); i++) {
                 const [dir, size] = sortedDirSizePairs[i];
                 console.log(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(dir)}`);
             }
         }
 
-        if (o_lfiles) {
+        if (o_large_files) {
             console.log(chalk.green('=== Largest files ==='));
             const sortedFileSizePairs = fileSizePairs.sort(([, sizeA], [, sizeB]) => sizeB - sizeA);
-            for (let i = 0; i < Math.min(o_nlfiles, sortedFileSizePairs.length); i++) {
+            for (let i = 0; i < Math.min(o_large_files_count, sortedFileSizePairs.length); i++) {
                 const [file, size] = sortedFileSizePairs[i];
                 console.log(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(file)}`);
             }
