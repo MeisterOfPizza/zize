@@ -1,7 +1,12 @@
 # Zize
 - [Zize](#zize)
+  - [Information](#information)
   - [Synopsis](#synopsis)
     - [Options](#options)
+
+## Information
+zize is a node.js program that will count the size (bytes, kB, MB, GB, KiB, MiB, GiB) of all directories and files specified.
+It can also rank the encountered directories and files to show which take up the most amount of space.
 
 ## Synopsis
 ```bash
