@@ -1,8 +1,9 @@
-# Zize
-- [Zize](#zize)
+# zize
+- [zize](#zize)
   - [Information](#information)
   - [Synopsis](#synopsis)
     - [Options](#options)
+  - [License](#license)
 
 ## Information
 zize is a node.js program that will count the size (bytes, kB, MB, GB, KiB, MiB, GiB) of all directories and files specified.
@@ -25,3 +26,6 @@ common options: [-A|--abort|-E|--extra-verbose|-H|--help|-D|--large-dirs|-N|--la
 * `-F, --large-files`: Show a list of the largest files found.
 * `-M, --large-files-count=<count>`: Show at least this many large files.
 * `-V, --verbose`: Print each directory counted (there are many, *may* decrease performance).
+
+## License
+MIT. Copyright (c) 2021 Emil Engelin.
