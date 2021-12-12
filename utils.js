@@ -1,6 +1,8 @@
 const getParam = (args, position) => (
     Array.isArray(args)
+    && position >= 0
     && args.length - 1 >= position
+    && typeof position === 'number'
     && typeof args[position] === 'string'
     && !args[position].startsWith('-')
     ? args[position] : undefined
@@ -50,7 +52,15 @@ const roundToDecimals = (n, d) => {
     return Math.round((n + Number.EPSILON) * p) / p;
 };
 
+/**
+ * @param {number} size
+ * @param {'bytes' | 'kb' | 'mb' | 'gb' | 'kib' | 'mib' | 'gib'} format
+ * @returns {string}
+ */
 const formatSize = (size, format) => {
+    if (typeof size !== 'number' || size < 0) {
+        return 'UNKNOWN';
+    }
     switch (format) {
         case 'kb':
             return `${Math.round(size * B_TO_KB_FACTOR).toLocaleString()} kB`;
@@ -69,7 +79,15 @@ const formatSize = (size, format) => {
     }
 };
 
+/**
+ * @param {number} size
+ * @param {boolean} binary
+ * @returns {string}
+ */
 const autoFormatSize = (size, binary) => {
+    if (typeof size !== 'number' || size < 0) {
+        return 'UNKNOWN';
+    }
     if (binary) {
         if (size >= GIB) {
             return formatSize(size, 'gib');

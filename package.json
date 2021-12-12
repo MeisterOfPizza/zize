@@ -5,12 +5,14 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node zize.js"
+    "start": "node zize.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Emil Engelin",
   "license": "MIT",
   "devDependencies": {
-    "chalk": "^4.1.0"
+    "chalk": "^4.1.0",
+    "jest": "^27.4.4"
   }
 }
