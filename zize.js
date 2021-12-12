@@ -36,27 +36,35 @@ const options = {
     onUpdateCount: (dirCount, fileCount) => {
         lastDirCount  = dirCount;
         lastFileCount = fileCount;
-        process.stdout.cursorTo(0);
-        process.stdout.write(chalk.yellow(`${dirCount.toLocaleString()} directories counted, ${fileCount.toLocaleString()} files counted`));
+        if (process.stdout.cursorTo) {
+            process.stdout.cursorTo(0);
+            process.stdout.write(chalk.yellow(`${dirCount.toLocaleString()} directories counted, ${fileCount.toLocaleString()} files counted`));
+        }
     },
 };
 
 if (o_verbose) {
     options.onStatDir = (dir, size) => {
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
-        process.stdout.write(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(dir)}`);
-        process.stdout.write('\n');
+        if (process.stdout.clearLine) {
+            process.stdout.clearLine();
+        }
+        if (process.stdout.cursorTo) {
+            process.stdout.cursorTo(0);
+        }
+        process.stdout.write(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(dir)}\n`);
         options.onUpdateCount(lastDirCount, lastFileCount);
     };
 }
 
 if (o_extra_verbose) {
     options.onStatFile = (file, size) => {
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
-        process.stdout.write(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.gray(file)}`);
-        process.stdout.write('\n');
+        if (process.stdout.clearLine) {
+            process.stdout.clearLine();
+        }
+        if (process.stdout.cursorTo) {
+            process.stdout.cursorTo(0);
+        }
+        process.stdout.write(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.gray(file)}\n`);
         options.onUpdateCount(lastDirCount, lastFileCount);
     };
 }
@@ -83,27 +91,33 @@ if (o_large_files) {
 
 getSize(path.resolve(process.cwd(), p_path || ''), options)
     .then(({ dirSize, dirSizePairs, fileSizePairs }) => {
-        process.stdout.write('\n');
+        if (process.stdout.cursorTo) {
+            process.stdout.cursorTo(0);
+        }
+        if (process.stdout.clearLine) {
+            process.stdout.clearLine();
+        }
+        process.stdout.write(chalk.yellow(`${lastDirCount.toLocaleString()} directories counted, ${lastFileCount.toLocaleString()} files counted\n`));
 
         if (o_large_dirs) {
-            console.log(chalk.green('=== Largest directories ==='));
+            process.stdout.write(chalk.green('=== Largest directories ===\n'));
             const sortedDirSizePairs = dirSizePairs.sort(([, sizeA], [, sizeB]) => sizeB - sizeA);
             for (let i = 0; i < Math.min(o_large_dirs_count, sortedDirSizePairs.length); i++) {
                 const [dir, size] = sortedDirSizePairs[i];
-                console.log(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(dir)}`);
+                process.stdout.write(`#${(i + 1).toString().padEnd(4, ' ')}${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(dir)}\n`);
             }
         }
 
         if (o_large_files) {
-            console.log(chalk.green('=== Largest files ==='));
+            process.stdout.write(chalk.green('=== Largest files ===\n'));
             const sortedFileSizePairs = fileSizePairs.sort(([, sizeA], [, sizeB]) => sizeB - sizeA);
             for (let i = 0; i < Math.min(o_large_files_count, sortedFileSizePairs.length); i++) {
                 const [file, size] = sortedFileSizePairs[i];
-                console.log(`${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(file)}`);
+                process.stdout.write(`#${(i + 1).toString().padEnd(4, ' ')}${chalk.yellow(`[${autoFormatSize(size, false)}]`.padEnd(20, ' '))}${chalk.cyan(file)}\n`);
             }
         }
 
-        console.log(chalk.green('=== Summary ==='));
+        process.stdout.write(chalk.green('=== Summary ===\n'));
         const gb        = formatSize(dirSize, 'gb');
         const mb        = formatSize(dirSize, 'mb');
         const kb        = formatSize(dirSize, 'kb');
@@ -114,11 +128,11 @@ getSize(path.resolve(process.cwd(), p_path || ''), options)
         const lhsLength = Math.max('Decimal'.length, gb.length, mb.length, kb.length, bytes.length);
         const rhsLength = Math.max('Binary'.length, gib.length, mib.length, kib.length, '--'.length);
 
-        console.log(`${chalk.cyan('Decimal'.padEnd(lhsLength, ' '))} | ${chalk.cyan('Binary')}`);
-        console.log(`${''.padEnd(lhsLength, '-')} | ${''.padEnd(rhsLength, '-')}`);
-        console.log(`${gb.padEnd(lhsLength, ' ')} | ${gib}`);
-        console.log(`${mb.padEnd(lhsLength, ' ')} | ${mib}`);
-        console.log(`${kb.padEnd(lhsLength, ' ')} | ${kib}`);
-        console.log(`${bytes.padEnd(lhsLength, ' ')} | --`);
+        process.stdout.write(`${chalk.cyan('Decimal'.padEnd(lhsLength, ' '))} | ${chalk.cyan('Binary')}\n`);
+        process.stdout.write(`${''.padEnd(lhsLength, '-')} | ${''.padEnd(rhsLength, '-')}\n`);
+        process.stdout.write(`${gb.padEnd(lhsLength, ' ')} | ${gib}\n`);
+        process.stdout.write(`${mb.padEnd(lhsLength, ' ')} | ${mib}\n`);
+        process.stdout.write(`${kb.padEnd(lhsLength, ' ')} | ${kib}\n`);
+        process.stdout.write(`${bytes.padEnd(lhsLength, ' ')} | --\n`);
     })
     .catch((err) => console.error(chalk.red(err)));
