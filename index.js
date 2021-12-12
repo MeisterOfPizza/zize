@@ -53,10 +53,11 @@ const getSize = (rootDir, options = null) => new Promise((resolveGetSize, reject
                                         dirSize += subDirSize;
 
                                         if (collectDirs) {
-                                            dirSizePairs.push([filePath, subDirSize], ...subDirSizePairs);
+                                            dirSizePairs.push([filePath, subDirSize]);
+                                            subDirSizePairs.forEach((pair) => dirSizePairs.push(pair));
                                         }
                                         if (collectFiles) {
-                                            fileSizePairs.push(...subFileSizePairs);
+                                            subFileSizePairs.forEach((pair) => fileSizePairs.push(pair));
                                         }
 
                                         resolveFile();
